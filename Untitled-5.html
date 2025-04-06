@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园跑智能代刷 | 全自动解决方案</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;      /* 活力红 */
+            --secondary: #4ECDC4;    /* 清新蓝绿 */
+            --accent1: #FFE66D;      /* 明亮黄 */
+            --accent2: #7C5CBF;      /* 活力紫 */
+            --accent3: #FF8C42;      /* 活力橙 */
+            --light: #FFFFFF;        /* 纯白 */
+            --dark: #2C3E50;         /* 深蓝灰 */
+            --gradient1: linear-gradient(135deg, var(--primary) 0%, var(--accent3) 100%);
+            --gradient2: linear-gradient(135deg, var(--secondary) 0%, var(--accent1) 100%);
+            --shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes run {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            color: var(--dark);
+            background: var(--light);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 添加运动小人背景装饰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,20 C60,20 70,30 70,40 C70,50 60,60 50,60 C40,60 30,50 30,40 C30,30 40,20 50,20 M45,60 L55,60 L58,85 L42,85 Z' fill='%23FFE66D' opacity='0.1'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M30,40 Q50,0 70,40 T90,80 T50,100 T10,80 T30,40' fill='%234ECDC4' opacity='0.1'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 Q40,20 60,50 T100,50' stroke='%23FF8C42' stroke-width='2' fill='none' opacity='0.1'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 100px 100px, 150px 150px, 200px 200px;
+            opacity: 0.3;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #4ECDC4 0%, #FFE66D 100%);
+            border-radius: 1.5rem;
+            color: white;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -100px;
+            width: 200px;
+            height: 200px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M10,50 Q30,20 50,50 T90,50' stroke='white' stroke-width='3' fill='none' opacity='0.2'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
+            animation: run 15s linear infinite;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,50 Q40,20 60,50 T100,50" stroke="white" stroke-width="2" fill="none" opacity="0.2"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .running-man {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,20 C60,20 70,30 70,40 C70,50 60,60 50,60 C40,60 30,50 30,40 C30,30 40,20 50,20 M45,60 L55,60 L58,85 L42,85 Z' fill='white'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
+            opacity: 0.2;
+        }
+
+        .running-man:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .running-man:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            animation: scaleUp 0.5s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M30,30 C40,10 60,20 70,40 C80,60 60,80 40,70 C20,60 20,50 30,30" fill="%234ECDC4" opacity="0.1"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(30deg);
+        }
+
+        .icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: var(--shadow);
+            animation: bounce 3s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient1);
+            border-radius: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .icon:hover::after {
+            opacity: 1;
+        }
+
+        .price-card {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .price-hint {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            background: linear-gradient(135deg, rgba(255, 230, 109, 0.95) 0%, rgba(78, 205, 196, 0.95) 100%);
+            padding: 1rem;
+            border-radius: 1rem;
+            text-align: center;
+            border: 2px dashed var(--accent3);
+            z-index: 2;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .price-hint::before {
+            content: '💡';
+            font-size: 2rem;
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+        }
+
+        .price-hint p {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin: 0;
+            line-height: 1.6;
+            padding: 0 2.5rem;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .price-hint strong {
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+        }
+
+        .plan {
+            padding: 2rem;
+            border-radius: 1.5rem;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .plan:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+
+        .plan::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,20 Q70,20 70,40 T50,60 T30,40 T50,20' fill='%234ECDC4' opacity='0.1'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
+            transform: rotate(30deg);
+            z-index: 0;
+        }
+
+        .badge {
+            background: var(--gradient1);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            display: inline-block;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            position: relative;
+            z-index: 1;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .button {
+            background: var(--gradient2);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .button:hover::after {
+            opacity: 1;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature {
+            display: flex;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .sports-decoration {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            opacity: 0.1;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .sports-decoration:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M40,30 C50,10 70,20 75,40 C80,60 60,80 40,70 C20,60 30,50 40,30" fill="%2364C8BC"/></svg>');
+        }
+
+        .sports-decoration:nth-child(2) {
+            bottom: 10%;
+            right: 5%;
+            animation-delay: -3s;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M60,70 C40,90 20,80 15,60 C10,40 30,20 50,30 C70,40 80,50 60,70" fill="%239BE3D9"/></svg>');
+        }
+
+        .sports-illustration {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .sports-illustration.running {
+            top: 20%;
+            right: 5%;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M30,30 C40,10 60,20 70,40 C80,60 60,80 40,70 C20,60 20,50 30,30" fill="%23FFE66D" opacity="0.3"/></svg>');
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .sports-illustration.jumping {
+            bottom: 10%;
+            left: 5%;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,20 Q70,20 70,40 T50,60 T30,40 T50,20" fill="%234ECDC4" opacity="0.3"/></svg>');
+            animation: float 6s ease-in-out infinite reverse;
+        }
+
+        .sports-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .sports-bg::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,50 Q40,20 60,50 T100,50" stroke="%234ECDC4" stroke-width="2" fill="none" opacity="0.1"/></svg>'),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,20 Q70,20 70,40 T50,60 T30,40 T50,20" fill="%23FFE66D" opacity="0.1"/></svg>');
+            background-size: 300px 300px;
+            background-repeat: repeat;
+            opacity: 0.1;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M30,30 C40,10 60,20 70,40 C80,60 60,80 40,70 C20,60 20,50 30,30" fill="%234ECDC4" opacity="0.1"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: rotate(30deg);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 1.5rem;
+            }
+
+            .running-man {
+                display: none;
+            }
+
+            .price-card {
+                grid-template-columns: 1fr;
+            }
+            
+            .price-hint {
+                position: relative;
+                left: 0;
+                top: 0;
+                transform: none;
+                width: auto;
+                margin: 1rem 0;
+            }
+        }
+
+        .add-friend-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .qr-code {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 1rem;
+        }
+
+        .wx-number {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .wx-number button {
+            background: var(--gradient1);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .wx-number button:hover {
+            transform: translateY(-2px);
+        }
+
+        .close-modal {
+            background: #f1f1f1;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="sports-bg"></div>
+    <div class="sports-illustration running"></div>
+    <div class="sports-illustration jumping"></div>
+
+    <div class="header">
+        <h1 style="font-size: 2.8rem; margin: 0.5rem 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1)">校园跑智能代刷</h1>
+        <p style="font-size: 1.4rem; opacity: 0.9; margin-top: 1rem">全自动解决方案 | 安全可靠 | 极简操作</p>
+        <div class="sports-illustration" style="position: absolute; right: 2rem; bottom: 2rem; width: 150px; height: 150px; opacity: 0.2;"></div>
+    </div>
+
+    <div class="grid">
+        <div class="card" style="position: relative;">
+            <div class="feature">
+                <div class="icon"><i class="fas fa-robot"></i></div>
+                <div>
+                    <h3>全自动运行</h3>
+                    <p>24/7自动化服务，无需任何手动操作</p>
+                </div>
+            </div>
+            <div class="illustration" style="position: absolute; right: 1rem; bottom: 1rem; width: 100px; height: 100px; opacity: 0.1; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M30,50 Q50,20 70,50 T90,50\" stroke=\"%234ECDC4\" stroke-width=\"3\" fill=\"none\"/></svg>');"></div>
+        </div>
+
+        <div class="card" style="position: relative;">
+            <div class="feature">
+                <div class="icon"><i class="fas fa-hand-holding-usd"></i></div>
+                <div>
+                    <h3>超值套餐</h3>
+                    <p>多人拼团价低至¥1/人</p>
+                </div>
+            </div>
+            <div class="illustration" style="position: absolute; right: 1rem; bottom: 1rem; width: 100px; height: 100px; opacity: 0.1; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M20,50 C40,30 60,70 80,50\" stroke=\"%23FFE66D\" stroke-width=\"3\" fill=\"none\"/></svg>');"></div>
+        </div>
+
+        <div class="card" style="position: relative;">
+            <div class="feature">
+                <div class="icon"><i class="fas fa-shield-alt"></i></div>
+                <div>
+                    <h3>安全保障</h3>
+                    <p>设备押金可退，损坏规则透明</p>
+                </div>
+            </div>
+            <div class="illustration" style="position: absolute; right: 1rem; bottom: 1rem; width: 100px; height: 100px; opacity: 0.1; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M50,20 L80,40 L50,80 L20,40 Z\" stroke=\"%23FF8C42\" stroke-width=\"3\" fill=\"none\"/></svg>');"></div>
+        </div>
+    </div>
+
+    <div class="price-hint" style="position: static; width: auto; margin: 2rem 0; transform: none;">
+        <p>一部手机可以给<strong>多人使用</strong>，平均每人<strong>25分钟</strong>，一天至少可以刷<strong>20个人</strong>，这样45次平均下来<strong>一个人仅需3元</strong> 🎉</p>
+    </div>
+
+    <div class="price-card">
+        <div class="plan" style="position: relative; overflow: hidden;">
+            <div class="sports-decoration" style="position: absolute; top: -20px; right: -20px; width: 150px; height: 150px; opacity: 0.1; transform: rotate(-15deg); background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M20,50 Q40,20 60,50 T100,50\" stroke=\"%234ECDC4\" stroke-width=\"3\" fill=\"none\"/></svg>');"></div>
+            <div class="badge">最受欢迎</div>
+            <h2>标准套餐</h2>
+            <p style="font-size: 2.5rem; margin: 1rem 0">¥60</p>
+            <ul style="list-style: none; padding: 0">
+                <li>✓ 25天全包服务</li>
+                <li>✓ 45次跑步任务</li>
+                <li>✓ 优先技术支持</li>
+            </ul>
+            <a href="javascript:void(0)" class="button" style="margin-top: 1.5rem" onclick="showAddOptions(event)">
+                <i class="fas fa-shopping-cart"></i>
+                立即订购
+            </a>
+        </div>
+
+        <div class="plan" style="position: relative; overflow: hidden;">
+            <div class="sports-decoration" style="position: absolute; top: -20px; right: -20px; width: 150px; height: 150px; opacity: 0.1; transform: rotate(-15deg); background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M30,30 C40,10 60,20 70,40 C80,60 60,80 40,70\" stroke=\"%23FFE66D\" stroke-width=\"3\" fill=\"none\"/></svg>');"></div>
+            <div class="badge">灵活选择</div>
+            <h2>按天租赁</h2>
+            <p style="font-size: 2.5rem; margin: 1rem 0">¥5<span style="font-size: 1rem">/天</span></p>
+            <ul style="list-style: none; padding: 0">
+                <li>✓ 3天起租优惠</li>
+                <li>✓ 按需灵活使用</li>
+                <li>✓ 支持紧急补刷</li>
+            </ul>
+            <a href="javascript:void(0)" class="button" style="margin-top: 1.5rem" onclick="showAddOptions(event)">
+                <i class="fas fa-calendar-day"></i>
+                开始租赁
+            </a>
+        </div>
+    </div>
+
+    <div class="card" style="position: relative; overflow: hidden;">
+        <div class="sports-decoration" style="position: absolute; top: 50%; right: 2rem; transform: translateY(-50%); width: 200px; height: 200px; opacity: 0.1; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M20,50 Q40,20 60,50 T100,50\" stroke=\"%23FF8C42\" stroke-width=\"3\" fill=\"none\"/></svg>');"></div>
+        <h2>教程资源下载</h2>
+        <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem">
+            <i class="fas fa-download" style="font-size: 1.5rem"></i>
+            <div>
+                <a href="https://pan.baidu.com/s/1M5So1MHJHXFSG00lkuXJEQ" class="button">
+                    百度网盘下载
+                </a>
+                <p style="margin: 0.5rem 0">提取码：d843</p>
+            </div>
+        </div>
+        <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 0.8rem; border-left: 4px solid var(--accent3);">
+            <p style="margin: 0; color: #666; line-height: 1.6;">
+                <i class="fas fa-info-circle" style="color: var(--accent3); margin-right: 0.5rem;"></i>
+                软件并不闭源，此链接为校园跑软件链接，但此链接软件并未发挥全部功能。当然，自己会修改手机内核的可以自行尝试，我们只提供手机租赁服务。
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>服务保障</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 1rem">
+            <div>
+                <h3><i class="fas fa-lock"></i> 数据安全</h3>
+                <p>独立设备运行，零数据留存</p>
+            </div>
+            <div>
+                <h3><i class="fas fa-recycle"></i> 环保租赁</h3>
+                <p>设备循环使用，减少电子垃圾</p>
+            </div>
+            <div>
+                <h3><i class="fas fa-headset"></i> 客服支持</h3>
+                <p>7×12小时在线服务</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-friend-modal" id="addFriendModal" style="display: none;">
+        <div class="modal-content">
+            <div class="add-options" style="background: #f8f9fa; border-radius: 1rem; padding: 2rem;">
+                <h3 style="margin: 0 0 1.5rem 0; color: #333;">选择添加方式</h3>
+                <div class="qr-code" style="background: #fff; padding: 2rem; border-radius: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h4 style="margin: 0 0 1.5rem 0; color: #333; font-size: 1.2rem;">微信二维码</h4>
+                    <div style="width: 280px; height: 280px; margin: 0 auto; border: 1px solid #eee; padding: 10px; border-radius: 0.5rem;">
+                        <!-- 这里需要您将二维码图片放在同一目录下并命名为 wechat-qr.jpg -->
+                        <img src="wechat-qr.jpg" alt="微信二维码" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <p style="margin: 1rem 0 0 0; color: #666; font-size: 14px;">请截图后使用微信扫码添加</p>
+                </div>
+                <div class="wx-number" style="margin-top: 1.5rem; background: #fff; padding: 1rem 1.5rem; border-radius: 0.8rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #333;">微信号：wxid_mnj9l65txrkt22</span>
+                        <button onclick="copyWX()" style="background: #FF6B6B; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.3s ease;">复制</button>
+                    </div>
+                </div>
+                <button onclick="closeAddOptions()" class="close-modal" style="width: 100%; background: #f1f1f1; border: none; padding: 0.8rem 2rem; border-radius: 0.8rem; cursor: pointer; margin-top: 1.5rem; transition: all 0.3s ease;">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div style="position: relative;">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20,50 Q40,20 60,50 T100,50' stroke='%234ECDC4' stroke-width='2' fill='none'/></svg>" style="width: 100%; height: 150px; object-fit: cover; border-radius: 1rem; margin-bottom: 1rem;">
+                <h3>智能调度</h3>
+                <p>自动优化运行时间，确保每个用户都能按时完成任务</p>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div style="position: relative;">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M30,30 C40,10 60,20 70,40 C80,60 60,80 40,70 C20,60 20,50 30,30' fill='%23FFE66D' opacity='0.3'/></svg>" style="width: 100%; height: 150px; object-fit: cover; border-radius: 1rem; margin-bottom: 1rem;">
+                <h3>实时监控</h3>
+                <p>全程监控运行状态，异常情况及时处理</p>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div style="position: relative;">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50,20 Q70,20 70,40 T50,60 T30,40 T50,20' fill='%234ECDC4' opacity='0.3'/></svg>" style="width: 100%; height: 150px; object-fit: cover; border-radius: 1rem; margin-bottom: 1rem;">
+                <h3>数据安全</h3>
+                <p>采用加密技术，保护用户隐私</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAddOptions(event) {
+            event.preventDefault();
+            document.getElementById('addFriendModal').style.display = 'flex';
+        }
+
+        function closeAddOptions() {
+            document.getElementById('addFriendModal').style.display = 'none';
+        }
+
+        function copyWX() {
+            navigator.clipboard.writeText('wxid_mnj9l65txrkt22').then(() => {
+                alert('微信号已复制到剪贴板');
+            });
+        }
+    </script>
+</body>
+</html>
